@@ -24,7 +24,9 @@ const ChannelsChart = () => {
       textStyle: {
         color: useColorModeValue('#1a202c', '#E2E8F0')
       },
-      formatter: '{b}: {c}%'
+      formatter: '{b}: {c}%',
+      confine: true,
+      position: 'top'
     },
     legend: {
       show: false
@@ -35,7 +37,7 @@ const ChannelsChart = () => {
         type: 'pie',
         radius: ['55%', '85%'],
         center: ['50%', '50%'],
-        avoidLabelOverlap: false,
+        avoidLabelOverlap: true,
         itemStyle: {
           borderRadius: 12,
           borderColor: useColorModeValue('#fff', '#1A202C'),
@@ -52,10 +54,7 @@ const ChannelsChart = () => {
         },
         emphasis: {
           label: {
-            show: true,
-            fontSize: 18,
-            fontWeight: 'bold',
-            formatter: '{b}\n{c}%'
+            show: false
           },
           scale: true,
           scaleSize: 8

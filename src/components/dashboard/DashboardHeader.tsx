@@ -14,21 +14,26 @@ import {
   MenuDivider,
   Badge,
   useColorModeValue,
-  IconButton,
+  Button,
 } from '@chakra-ui/react';
 import { 
   User, 
   Settings, 
   LogOut, 
   ChevronDown,
-  Shield
+  Shield,
+  Home,
+  Phone,
+  Sparkles
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import NotificationsPanel from './NotificationsPanel';
 import ColorModeToggle from '../ui/ColorModeToggle';
 
 const DashboardHeader: React.FC = () => {
   const { user, logout } = useAuth();
+  const router = useRouter();
   
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -51,80 +56,140 @@ const DashboardHeader: React.FC = () => {
       px={6}
       py={3}
     >
-      <Flex justify="flex-end" align="center" gap={4}>
-        {/* Toggle de modo oscuro */}
-        <ColorModeToggle />
-
-        {/* Notificaciones */}
-        <NotificationsPanel />
-
-        {/* User Menu */}
-        <Menu>
-          <MenuButton
-            as={Box}
-            cursor="pointer"
+      <Flex justify="space-between" align="center">
+        {/* Logo y navegación */}
+        <HStack spacing={6}>
+          <HStack 
+            spacing={2} 
+            cursor="pointer" 
+            onClick={() => router.push('/')}
             _hover={{ opacity: 0.8 }}
-            transition="opacity 0.2s"
           >
-            <HStack spacing={3}>
-              <Avatar 
-                name={user.name} 
-                src={user.avatar}
-                size="sm"
-                bg="teal.500"
-              />
-              <Box display={{ base: 'none', md: 'block' }}>
-                <Text fontWeight="medium" fontSize="sm" color={headingColor}>
+            <Sparkles size={24} color="#319795" />
+            <Text 
+              fontWeight="bold" 
+              fontSize="xl" 
+              color={headingColor}
+              display={{ base: 'none', md: 'block' }}
+            >
+              DermaPlus
+            </Text>
+          </HStack>
+          
+          <HStack spacing={2} display={{ base: 'none', sm: 'flex' }}>
+            <Button
+              leftIcon={<Home size={16} />}
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push('/')}
+              borderRadius="lg"
+            >
+              Inicio
+            </Button>
+            <Button
+              leftIcon={<Phone size={16} />}
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push('/contacto')}
+              borderRadius="lg"
+            >
+              Contacto
+            </Button>
+          </HStack>
+        </HStack>
+
+        {/* Acciones de usuario */}
+        <HStack spacing={4}>
+          {/* Toggle de modo oscuro */}
+          <ColorModeToggle />
+
+          {/* Notificaciones */}
+          <NotificationsPanel />
+
+          {/* User Menu */}
+          <Menu>
+            <MenuButton
+              as={Box}
+              cursor="pointer"
+              _hover={{ opacity: 0.8 }}
+              transition="opacity 0.2s"
+            >
+              <HStack spacing={3}>
+                <Avatar 
+                  name={user.name} 
+                  src={user.avatar}
+                  size="sm"
+                  bg="teal.500"
+                />
+                <Box display={{ base: 'none', md: 'block' }}>
+                  <Text fontWeight="medium" fontSize="sm" color={headingColor}>
+                    {user.name}
+                  </Text>
+                  <Badge 
+                    colorScheme={roleColor} 
+                    fontSize="xs" 
+                    borderRadius="full"
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                    w="fit-content"
+                  >
+                    <Shield size={10} />
+                    {roleLabel}
+                  </Badge>
+                </Box>
+                <ChevronDown size={16} color="gray" />
+              </HStack>
+            </MenuButton>
+            
+            <MenuList 
+              borderRadius="xl" 
+              boxShadow="lg"
+              border="1px solid"
+              borderColor={borderColor}
+            >
+              <Box px={4} py={2}>
+                <Text fontWeight="medium" color={headingColor}>
                   {user.name}
                 </Text>
-                <Badge 
-                  colorScheme={roleColor} 
-                  fontSize="xs" 
-                  borderRadius="full"
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  w="fit-content"
-                >
-                  <Shield size={10} />
-                  {roleLabel}
-                </Badge>
+                <Text fontSize="sm" color={textColor}>
+                  {user.email}
+                </Text>
               </Box>
-              <ChevronDown size={16} color="gray" />
-            </HStack>
-          </MenuButton>
-          
-          <MenuList 
-            borderRadius="xl" 
-            boxShadow="lg"
-            border="1px solid"
-            borderColor={borderColor}
-          >
-            <Box px={4} py={2}>
-              <Text fontWeight="medium" color={headingColor}>
-                {user.name}
-              </Text>
-              <Text fontSize="sm" color={textColor}>
-                {user.email}
-              </Text>
-            </Box>
-            <MenuDivider />
-            <MenuItem icon={<User size={16} />}>
-              Mi perfil
-            </MenuItem>
-            <MenuItem icon={<Settings size={16} />}>
-              Configuración
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem 
-              icon={<LogOut size={16} />} 
-              color="red.500"
-              onClick={logout}
-            >
-              Cerrar sesión
-            </MenuItem>
-          </MenuList>
-        </Menu>
+              <MenuDivider />
+              {/* Links de navegación en móvil */}
+              <MenuItem 
+                icon={<Home size={16} />}
+                display={{ base: 'flex', sm: 'none' }}
+                onClick={() => router.push('/')}
+              >
+                Inicio
+              </MenuItem>
+              <MenuItem 
+                icon={<Phone size={16} />}
+                display={{ base: 'flex', sm: 'none' }}
+                onClick={() => router.push('/contacto')}
+              >
+                Contacto
+              </MenuItem>
+              <MenuDivider display={{ base: 'block', sm: 'none' }} />
+              <MenuItem icon={<User size={16} />}>
+                Mi perfil
+              </MenuItem>
+              <MenuItem icon={<Settings size={16} />}>
+                Configuración
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem 
+                icon={<LogOut size={16} />} 
+                color="red.500"
+                onClick={logout}
+              >
+                Cerrar sesión
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </HStack>
       </Flex>
     </Box>
   );
