@@ -1,10 +1,22 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 
-const useForm = (initialValues) => {
-    const [values, setValues] = useState(initialValues);
-    const [errors, setErrors] = useState({});
+interface FormValues {
+    name?: string;
+    email?: string;
+    phone?: string;
+    treatment?: string;
+    [key: string]: string | undefined;
+}
 
-    const handleChange = (e) => {
+interface FormErrors {
+    [key: string]: string;
+}
+
+const useForm = (initialValues: FormValues) => {
+    const [values, setValues] = useState<FormValues>(initialValues);
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setValues({
             ...values,
@@ -13,7 +25,7 @@ const useForm = (initialValues) => {
     };
 
     const validate = () => {
-        let tempErrors = {};
+        const tempErrors: FormErrors = {};
         if (!values.name) tempErrors.name = 'Nombre es requerido';
         if (!values.email) tempErrors.email = 'Email es requerido';
         if (!values.phone) tempErrors.phone = 'Teléfono es requerido';
@@ -22,12 +34,11 @@ const useForm = (initialValues) => {
         return Object.keys(tempErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validate()) {
-            // Aquí se puede manejar el envío del formulario
             alert('Formulario enviado con éxito');
-            setValues(initialValues); // Resetear el formulario
+            setValues(initialValues);
         }
     };
 
